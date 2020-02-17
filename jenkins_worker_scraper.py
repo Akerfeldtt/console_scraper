@@ -13,7 +13,7 @@ def slice(lines, keyword, start):
     :param keyword: word to cut line with
     :return:
     """
-    lines_sliced=[]
+    lines_sliced =[ ]
     for line in lines:
         foodnet_line = re.search(keyword, line)
         if foodnet_line is not None:
@@ -30,6 +30,7 @@ def slice(lines, keyword, start):
             pass
     return lines_sliced
 
+
 def escape_brackets(lines, open_bracket, close_bracket):
     """
     Escape brackets from individual foodnet lines in consoleText
@@ -41,26 +42,26 @@ def escape_brackets(lines, open_bracket, close_bracket):
     lines_sliced = []
     for line in lines:
         if open_bracket in line:
-            pos=line.find(open_bracket)
-            pos2=line.find(close_bracket)
-            line=list(line)
-            line[pos]="\\"+open_bracket
-            line[pos2]="\\"+close_bracket
-            line="".join(line)
+            pos = line.find(open_bracket)
+            pos2 = line.find(close_bracket)
+            line = list(line)
+            line[pos] = "\\"+open_bracket
+            line[pos2] = "\\"+close_bracket
+            line = "".join(line)
         else:
             pass
         lines_sliced.append(line)
     return lines_sliced
+
 
 @click.option('--job_number')  # e.g.: '1495' .../scope-django-111-branches/job_number
 @click.option('--worker')  # e.g.: '[gw8]'
 @click.command()
 def main(job_number, worker):
     # URL set to branch # / consoleText for error text.
-    url = "http://jenkins.ci.rd/job/scope-django-111-branches/{}/consoleText"\
-        .format(job_number)
+    url = "http://jenkins.ci.rd/job/scope-py23/{}/PythonVersion=2,worker=django-1.11/consoleText".format(job_number)
     html = urllib.urlopen(url).read()
-    soup = BeautifulSoup(html, "lxml")
+    soup = BeautifulSoup(html)
 
     # kill all script and style elements
     for script in soup(["script", "style"]):
@@ -72,7 +73,7 @@ def main(job_number, worker):
     # break into lines
     lines = text.splitlines()
 
-    worker_lines=[]
+    worker_lines = []
 
     # grab lines that contain worker number
     for line in lines:
@@ -84,8 +85,9 @@ def main(job_number, worker):
     sliced_line = escape_brackets(sliced_line, "[", "]")
     sliced_line = escape_brackets(sliced_line, "(", ")")
 
-    final_string=' \\'.join(sliced_line)
-    print final_string
+    final_string = ' \\'.join(sliced_line)
+    print(final_string)
+
 
 if __name__ == "__main__":
     main()
