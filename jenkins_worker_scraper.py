@@ -59,7 +59,8 @@ def escape_brackets(lines, open_bracket, close_bracket):
 @click.command()
 def main(job_number, worker):
     # URL set to branch # / consoleText for error text.
-    url = "http://jenkins.ci.rd/job/scope-py23/{}/PythonVersion=2,worker=django-1.11/consoleText".format(job_number)
+
+    url = "http://jenkins.ci.rd/job/scope/{}/consoleText".format(job_number)
     html = urllib.urlopen(url).read()
     soup = BeautifulSoup(html)
 
