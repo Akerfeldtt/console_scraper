@@ -3,7 +3,7 @@ import click
 import urllib
 from bs4 import BeautifulSoup
 import re
-
+import urllib.request
 
 def slice(lines, keyword, start):
     """
@@ -22,10 +22,7 @@ def slice(lines, keyword, start):
                 cut_line = line[foodnet_line_ind::]
             else:
                 cut_line = line[:foodnet_line_ind]
-            if type(cut_line) == unicode:
-                lines_sliced.append(cut_line.encode("utf-8"))
-            else:
-                lines_sliced.append(cut_line)
+            lines_sliced.append(cut_line)
         else:
             pass
     return lines_sliced
@@ -61,7 +58,7 @@ def main(job_number, worker):
     # URL set to branch # / consoleText for error text.
 
     url = "http://jenkins.ci.rd/job/scope/{}/consoleText".format(job_number)
-    html = urllib.urlopen(url).read()
+    html = urllib.request.urlopen(url).read()
     soup = BeautifulSoup(html)
 
     # kill all script and style elements
